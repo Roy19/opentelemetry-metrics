@@ -47,7 +47,7 @@ func InitMeters() {
 		metric.WithDescription("Current no. of items in a given cart"),
 	)
 	if err != nil {
-		log.Fatal("failed to create items_in_cart guage: %v", err)
+		log.Fatalf("failed to create items_in_cart guage: %v", err)
 	}
 }
 
