@@ -3,8 +3,8 @@ package controllers
 import (
 	"log"
 	"signoz-test/dto"
+	"signoz-test/interfaces"
 	"signoz-test/metrics"
-	"signoz-test/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +35,17 @@ func constructResponse(c *gin.Context, err error, message interface{}) {
 	}
 }
 
-func AddToCart(c *gin.Context) {
+type Controller struct {
+	service interfaces.Service
+}
+
+func NewController(service interfaces.Service) interfaces.Controller {
+	return &Controller{
+		service: service,
+	}
+}
+
+func (cn *Controller) AddToCart(c *gin.Context) {
 	startTime := time.Now()
 	var cartItem dto.AddToCart
 	if err := c.BindJSON(&cartItem); err != nil {
@@ -49,7 +59,7 @@ func AddToCart(c *gin.Context) {
 		return
 	}
 	ctx := c.Request.Context()
-	constructResponse(c, service.AddToCartService(ctx, cartItem), nil)
+	constructResponse(c, cn.service.AddItemToCart(ctx, cartItem), nil)
 	duration := time.Since(startTime)
 	metrics.RecordLatency(ctx,
 		float64(duration.Milliseconds()),
@@ -58,11 +68,11 @@ func AddToCart(c *gin.Context) {
 	)
 }
 
-func GetItemsInCart(c *gin.Context) {
+func (cn *Controller) GetItemsInCart(c *gin.Context) {
 	startTime := time.Now()
 	ctx := c.Request.Context()
 	cartName := c.Param("cartName")
-	items, err := service.GetItemsFromCart(ctx, cartName)
+	items, err := cn.service.GetItemsInCart(ctx, cartName)
 	if err != nil {
 		log.Println("[controller.GetItemsInCart] failed to get items in cart", err)
 		constructResponse(c, err, nil)
