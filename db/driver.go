@@ -20,6 +20,10 @@ func init() {
 	}
 }
 
+func Close() error {
+	return db.Close()
+}
+
 func Ping() error {
 	return db.Ping()
 }

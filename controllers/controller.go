@@ -6,17 +6,21 @@ import (
 	"signoz-test/db"
 	"signoz-test/db/generated"
 	"signoz-test/dto"
+	"signoz-test/metrics"
 
 	"github.com/gin-gonic/gin"
 )
 
 func constructErrorResponse(c *gin.Context, err error, code int) {
+	ctx := c.Request.Context()
 	if err != nil {
+		metrics.FailedRequests.Add(ctx, 1)
 		c.JSON(code, dto.Response{
 			ErrorCode: code,
 			Message:   err.Error(),
 		})
 	} else {
+		metrics.SuccessfulRequests.Add(ctx, 1)
 		c.JSON(code, dto.Response{
 			Message: "operation success",
 		})
