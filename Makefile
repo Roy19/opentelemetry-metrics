@@ -5,3 +5,10 @@ build:
 .PHONY: generate
 generate:
 	sqlc generate
+
+.PHONY: tests
+tests: unit-tests
+
+.PHONY: unit-tests
+unit-tests:
+	go test ./...
