@@ -14,13 +14,13 @@ import (
 func constructErrorResponse(c *gin.Context, err error, code int) {
 	ctx := c.Request.Context()
 	if err != nil {
-		metrics.FailedRequests.Add(ctx, 1)
+		metrics.IncFailedRequests(ctx, code)
 		c.JSON(code, dto.Response{
 			ErrorCode: code,
 			Message:   err.Error(),
 		})
 	} else {
-		metrics.SuccessfulRequests.Add(ctx, 1)
+		metrics.IncSuccessfulRequests(ctx, code)
 		c.JSON(code, dto.Response{
 			Message: "operation success",
 		})
