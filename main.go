@@ -17,7 +17,7 @@ func main() {
 		log.Fatal("failed to ping db", err)
 	}
 	defer db.Close()
-	cleanup := metrics.InitMetrics(context.Background())
+	cleanup := metrics.InitMeterProvider(context.Background())
 	defer cleanup(context.Background())
 	router.Use(otelgin.Middleware("opentelemetry-demo"))
 	router.POST("/cart", controllers.AddToCart)

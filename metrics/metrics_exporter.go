@@ -21,7 +21,7 @@ var (
 	insecure     = os.Getenv("INSECURE_MODE")
 )
 
-func InitMetrics(ctx context.Context) func(context.Context) error {
+func InitMeterProvider(ctx context.Context) func(context.Context) error {
 	var secureOption otlpmetricgrpc.Option
 	if strings.ToLower(insecure) == "false" || insecure == "0" || strings.ToLower(insecure) == "f" {
 		secureOption = otlpmetricgrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
