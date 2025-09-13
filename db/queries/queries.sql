@@ -4,6 +4,9 @@ select id, name from public.carts;
 -- name: AddItemToCart :exec
 insert into public.items (name, cart_id) values ($1, $2);
 
+-- name: GetCartIdGivenName :one
+select id from public.carts where name = $1;
+
 -- name: GetItemsInCart :many
 select it.id, it.name from public.items it
 inner join public.carts c

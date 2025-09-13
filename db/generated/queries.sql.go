@@ -34,6 +34,17 @@ func (q *Queries) GetCartDetails(ctx context.Context) (Cart, error) {
 	return i, err
 }
 
+const getCartIdGivenName = `-- name: GetCartIdGivenName :one
+select id from public.carts where name = $1
+`
+
+func (q *Queries) GetCartIdGivenName(ctx context.Context, name string) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getCartIdGivenName, name)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getItemsInCart = `-- name: GetItemsInCart :many
 select it.id, it.name from public.items it
 inner join public.carts c

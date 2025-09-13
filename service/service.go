@@ -22,9 +22,14 @@ func AddToCartService(ctx context.Context, cartItem dto.AddToCart) error {
 		}
 	}()
 	queries := generated.New(dbInstance).WithTx(tx)
+	cartId, err := queries.GetCartIdGivenName(ctx, *cartItem.CartName)
+	if err != nil {
+		log.Println("failed to get cart name", err)
+		return errors.New("failed to get cart with given name")
+	}
 	if err := queries.AddItemToCart(ctx, generated.AddItemToCartParams{
-		CartID: int32(cartItem.CartId),
-		Name:   cartItem.ItemName,
+		CartID: cartId,
+		Name:   *cartItem.ItemName,
 	}); err != nil {
 		log.Println("[service.AddToCart] failed to add item to cart", err)
 		return errors.New("failed to add to cart in db")

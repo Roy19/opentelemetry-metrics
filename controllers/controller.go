@@ -5,11 +5,12 @@ import (
 	"signoz-test/dto"
 	"signoz-test/metrics"
 	"signoz-test/service"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func constructErrorResponse(c *gin.Context, err error) {
+func constructResponse(c *gin.Context, err error) {
 	ctx := c.Request.Context()
 	if err != nil {
 		metrics.IncFailedRequests(ctx, 400)
@@ -26,13 +27,24 @@ func constructErrorResponse(c *gin.Context, err error) {
 }
 
 func AddToCart(c *gin.Context) {
+	startTime := time.Now()
 	var cartItem dto.AddToCart
 	if err := c.BindJSON(&cartItem); err != nil {
-		log.Println("failed to convert request to json", err)
-		constructErrorResponse(c, err)
+		log.Println("[controller.AddToCart] failed to convert request to json", err)
+		constructResponse(c, err)
+		return
+	}
+	if err := cartItem.Validate(); err != nil {
+		log.Println("[controller.AddToCart] failed to validate request", err)
+		constructResponse(c, err)
 		return
 	}
 	ctx := c.Request.Context()
-	err := service.AddToCartService(ctx, cartItem)
-	constructErrorResponse(c, err)
+	constructResponse(c, service.AddToCartService(ctx, cartItem))
+	duration := time.Since(startTime)
+	metrics.RecordLatency(ctx,
+		float64(duration.Milliseconds()),
+		c.Request.Method,
+		"/cart",
+	)
 }
