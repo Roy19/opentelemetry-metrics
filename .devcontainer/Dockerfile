@@ -11,3 +11,8 @@ FROM mcr.microsoft.com/devcontainers/go:1-1.24-bookworm
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
+
+USER vscode
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.19.0
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.30.0
+USER root
