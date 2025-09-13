@@ -23,6 +23,8 @@ func main() {
 	cleanup := metrics.InitMeterProvider(context.Background())
 	defer cleanup(context.Background())
 	router.Use(otelgin.Middleware(serviceName))
-	router.POST("/cart", controllers.AddToCart)
+	cartGroup := router.Group("/cart")
+	cartGroup.POST("/add", controllers.AddToCart)
+	cartGroup.GET("/:cartName", controllers.GetItemsInCart)
 	router.Run(":8080")
 }

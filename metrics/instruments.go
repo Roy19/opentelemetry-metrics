@@ -13,6 +13,7 @@ var (
 	successfulRequests metric.Int64Counter
 	failedRequests     metric.Int64Counter
 	requestDuration    metric.Float64Histogram
+	itemsInCart        metric.Int64Gauge
 )
 
 func InitMeters() {
@@ -41,6 +42,13 @@ func InitMeters() {
 	if err != nil {
 		log.Fatalf("failed to create request_latency histogram: %v", err)
 	}
+	itemsInCart, err = meter.Int64Gauge(
+		"items_in_cart",
+		metric.WithDescription("Current no. of items in a given cart"),
+	)
+	if err != nil {
+		log.Fatal("failed to create items_in_cart guage: %v", err)
+	}
 }
 
 func IncSuccessfulRequests(ctx context.Context, code int) {
@@ -59,5 +67,11 @@ func RecordLatency(ctx context.Context, duration float64, method string, endpoin
 	requestDuration.Record(ctx, duration, metric.WithAttributes(
 		attribute.String("http.method", method),
 		attribute.String("http.endpoint", endpoint),
+	))
+}
+
+func RecordItemsInCart(ctx context.Context, cartName string, quantity int) {
+	itemsInCart.Record(ctx, int64(quantity), metric.WithAttributes(
+		attribute.String("cart_name", cartName),
 	))
 }

@@ -18,6 +18,10 @@ func (a *AddToCart) Validate() error {
 }
 
 type Response struct {
-	ErrorCode int    `json:"error_code,omitempty"`
-	Message   string `json:"message"`
+	Code    int         `json:"code,omitempty"`
+	Message interface{} `json:"message"`
+}
+
+type ItemsInCart struct {
+	Items []string `json:"items"`
 }
