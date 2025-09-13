@@ -118,7 +118,6 @@ func TestService_GetItemsInCart(t *testing.T) {
 
 func TestService_GetItemsInCart_CartNotFound(t *testing.T) {
 	metrics.InitMeters()
-	metrics.InitMeters()
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
