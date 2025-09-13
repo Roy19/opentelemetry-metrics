@@ -1,6 +1,6 @@
 create table if not exists public.carts (
     id serial primary key,
-    name varchar(50) not null
+    name varchar(50) not null unique
 );
 
 create table if not exists public.items (
