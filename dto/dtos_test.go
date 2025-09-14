@@ -1,7 +1,8 @@
-package dto
+package dto_test
 
 import (
 	"errors"
+	"signoz-test/dto"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,27 +14,27 @@ func TestAddToCart_Validate(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		input     AddToCart
+		input     dto.AddToCart
 		expectErr error
 	}{
 		{
 			name:      "valid input",
-			input:     AddToCart{CartName: &cartName, ItemName: &itemName},
+			input:     dto.AddToCart{CartName: &cartName, ItemName: &itemName},
 			expectErr: nil,
 		},
 		{
 			name:      "missing cart name",
-			input:     AddToCart{CartName: nil, ItemName: &itemName},
+			input:     dto.AddToCart{CartName: nil, ItemName: &itemName},
 			expectErr: errors.New("cart_name cannot be empty"),
 		},
 		{
 			name:      "missing item name",
-			input:     AddToCart{CartName: &cartName, ItemName: nil},
+			input:     dto.AddToCart{CartName: &cartName, ItemName: nil},
 			expectErr: errors.New("item_name cannot be empty"),
 		},
 		{
 			name:      "missing both",
-			input:     AddToCart{CartName: nil, ItemName: nil},
+			input:     dto.AddToCart{CartName: nil, ItemName: nil},
 			expectErr: errors.New("cart_name cannot be empty"),
 		},
 	}
