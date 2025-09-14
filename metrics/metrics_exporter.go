@@ -37,6 +37,18 @@ func InitMeterProvider(ctx context.Context) func(context.Context) error {
 		log.Fatalf("Failed to create OTLP metric exporter: %v", err)
 	}
 
+	requestLatencyView := sdkmetric.NewView(
+		sdkmetric.Instrument{
+			Name: "request_latency",
+			Kind: sdkmetric.InstrumentKindHistogram,
+		},
+		sdkmetric.Stream{
+			Aggregation: sdkmetric.AggregationExplicitBucketHistogram{
+				Boundaries: []float64{50, 100, 150, 200, 250, 300, 350, 400},
+			},
+		},
+	)
+
 	resources, err := resource.New(ctx,
 		resource.WithAttributes(
 			attribute.String("service.name", serviceName),
@@ -50,6 +62,7 @@ func InitMeterProvider(ctx context.Context) func(context.Context) error {
 	meterProvider := sdkmetric.NewMeterProvider(
 		sdkmetric.WithResource(resources),
 		sdkmetric.WithReader(sdkmetric.NewPeriodicReader(exporter)),
+		sdkmetric.WithView(requestLatencyView),
 	)
 	otel.SetMeterProvider(meterProvider)
 	InitMeters()
