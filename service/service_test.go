@@ -1,4 +1,4 @@
-package service
+package service_test
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"signoz-test/dto"
 	"signoz-test/errors"
 	"signoz-test/metrics"
+	"signoz-test/service"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
@@ -19,7 +20,7 @@ func TestService_AddItemToCart(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 	itemName := "item1"
@@ -44,7 +45,7 @@ func TestService_AddItemToCart_CartNotFound(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 	itemName := "item1"
@@ -66,7 +67,7 @@ func TestService_AddItemToCart_AddItemError(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 	itemName := "item1"
@@ -92,7 +93,7 @@ func TestService_GetItemsInCart(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 
@@ -122,7 +123,7 @@ func TestService_GetItemsInCart_CartNotFound(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 
@@ -144,7 +145,7 @@ func TestService_GetItemsInCart_GetItemsError(t *testing.T) {
 	assert.NoError(t, err)
 	defer db.Close()
 
-	s := &Service{dbInstance: db}
+	s := service.NewService(db)
 	ctx := context.Background()
 	cartName := "cart1"
 
